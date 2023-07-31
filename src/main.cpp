@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoOTA.h>
 #include <esp_wifi.h>
+#include <httpClientJPG.h>
 #include <soc/rtc_cntl_reg.h>
 #include <IotWebConf.h>
 #include <IotWebConfTParameter.h>
@@ -19,12 +20,23 @@
 
 extern "C" uint8_t temprature_sens_read();
 
+#define FREQ_STRING_LEN 5
+static const char pcfreqValues[][FREQ_STRING_LEN]={"10","30","60"};
+static const char pcfreqNames[][FREQ_STRING_LEN]={"10 s","30 s","60 s"};
+
 // HTML files
 extern const char index_html_min_start[] asm("_binary_html_index_min_html_start");
 extern const char restart_html_min_start[] asm("_binary_html_restart_min_html_start");
 
 auto param_group_board = iotwebconf::ParameterGroup("board", "Board settings");
 auto param_board = iotwebconf::Builder<iotwebconf::SelectTParameter<sizeof(camera_configs[0])>>("bt").label("Board").optionValues((const char *)&camera_configs).optionNames((const char *)&camera_configs).optionCount(sizeof(camera_configs) / sizeof(camera_configs[0])).nameLength(sizeof(camera_configs[0])).defaultValue(DEFAULT_CAMERA_CONFIG).build();
+
+auto param_group_prusaconnect = iotwebconf::ParameterGroup("prusac","Prusa Connect");
+auto param_prusaconnect_url = iotwebconf::Builder<iotwebconf::TextTParameter<255>>("pcu").label("Prusa Connect URL").defaultValue(PRUSACONNECT_URL).build();
+auto param_prusaconnect_fingerprint = iotwebconf::Builder<iotwebconf::TextTParameter<64>>("pcfpt").label("Prusa Connect fingerprint").defaultValue(PC_FINGERPRINT).build();
+auto param_prusaconnect_token = iotwebconf::Builder<iotwebconf::TextTParameter<32>>("pctkn").label("Prusa Connect token").defaultValue(PC_TOKEN).build();
+auto param_prusaconnect_freq = iotwebconf::Builder<iotwebconf::SelectTParameter<FREQ_STRING_LEN>>("pcfcy").label("Refresh frequency").optionValues((const char *)pcfreqValues).optionNames((const char *)pcfreqNames).optionCount(sizeof(pcfreqValues) / sizeof(FREQ_STRING_LEN)).nameLength(FREQ_STRING_LEN).defaultValue(DEFAULT_SNAP_FREQUENCY).build();
+auto param_prusaconnect_flash = iotwebconf::Builder<iotwebconf::CheckboxTParameter>("pcflsh").label("Use flash").defaultValue(DEFAULT_USEFLASH).build();
 
 auto param_group_camera = iotwebconf::ParameterGroup("camera", "Camera settings");
 auto param_frame_duration = iotwebconf::Builder<iotwebconf::UIntTParameter<unsigned long>>("fd").label("Frame duration (ms)").defaultValue(DEFAULT_FRAME_DURATION).min(10).build();
@@ -66,12 +78,18 @@ DNSServer dnsServer;
 std::unique_ptr<rtsp_server> camera_server;
 // Web server
 WebServer web_server(80);
+// Http Client
+HTTPClientJPG httpc;
+
+uint32_t previousTrigger = 0;
 
 auto thingName = String(WIFI_SSID) + "-" + String(ESP.getEfuseMac(), 16);
 IotWebConf iotWebConf(thingName.c_str(), &dnsServer, &web_server, WIFI_PASSWORD, CONFIG_VERSION);
 
 // Keep track of config changes. This will allow a reset of the device
 bool config_changed = false;
+// connection to prusa connect
+bool prusa_connect_link = false;
 // Camera initialization result
 esp_err_t camera_init_result;
 
@@ -133,6 +151,13 @@ void handle_root()
       {"IpV6", ipv6.toString()},
       {"NetworkState.ApMode", String(iotWebConf.getState() == iotwebconf::NetworkState::ApMode)},
       {"NetworkState.OnLine", String(iotWebConf.getState() == iotwebconf::NetworkState::OnLine)},
+      //Prusa Connect
+      {"PrusaConnectUrl",String(param_prusaconnect_url.value())},
+      {"FingerPrint", String(param_prusaconnect_fingerprint.value())},
+      {"Token", String(param_prusaconnect_token.value())},
+      {"SnapFrequency", String(param_prusaconnect_freq.value())},
+      {"PcFlash",String(param_prusaconnect_flash.value())},
+      {"PcConnected", String(prusa_connect_link)},
       // Camera
       {"BoardType", String(param_board.value())},
       {"FrameSize", String(param_frame_size.value())},
@@ -225,6 +250,65 @@ void handle_snapshot()
   web_server.setContentLength(fb_len);
   web_server.send(200, "image/jpeg", "");
   web_server.sendContent(fb, fb_len);
+}
+
+void trigger_prusaConnect()
+{
+  log_v("trigger_prusaConnect");
+  if (camera_init_result != ESP_OK)
+  {
+    log_v("Camera is not initialized");
+    return;
+  }
+
+  if (param_prusaconnect_flash.value() == true)
+  {
+    // Set flash led intensity
+    analogWrite(LED_FLASH, 255);
+  }
+
+  // Remove old images stored in the frame buffer
+  auto frame_buffers = param_frame_buffers.value();
+  while (frame_buffers--)
+    cam.run();
+
+  auto fb_len = cam.getSize();
+  auto fb = (uint8_t *)cam.getfb();
+  if (fb == nullptr)
+  {
+    log_v("Unable to obtain frame buffer from the camera");
+    if (param_prusaconnect_flash.value() == true)
+    {
+      // Set flash led intensity
+      analogWrite(LED_FLASH, param_led_intensity.value());
+    }
+    return;
+  }
+
+  httpc.begin(param_prusaconnect_url.value());
+  httpc.addHeader("accept","*/*");
+  httpc.addHeader("Cache-Control", "no-cache");
+  httpc.addHeader("content-type","image/jpg");
+  httpc.addHeader("fingerprint",param_prusaconnect_fingerprint.value());
+  httpc.addHeader("token",param_prusaconnect_token.value());
+  int resulthttp=httpc.sendRequest("PUT",fb, (size_t)fb_len);
+  prusa_connect_link = httpc.connected();
+  if ((resulthttp >= 200) && (resulthttp < 300))
+  {
+    log_v("SNAPSHOT SENT");
+  }
+  else
+  {
+    log_v("Erreur sending snapshot. Http Error: %d", resulthttp);
+    //log_v("payload: %s",httpc.getString());
+  }
+  httpc.end();
+
+  if (param_prusaconnect_flash.value() == true)
+  {
+    // Set flash led intensity
+    analogWrite(LED_FLASH, param_led_intensity.value());
+  }
 }
 
 #define STREAM_CONTENT_BOUNDARY "123456789000000000000987654321"
@@ -446,6 +530,13 @@ void setup()
   param_group_peripheral.addItem(&param_led_intensity);
   iotWebConf.addParameterGroup(&param_group_peripheral);
 
+  param_group_prusaconnect.addItem(&param_prusaconnect_url);
+  param_group_prusaconnect.addItem(&param_prusaconnect_fingerprint);
+  param_group_prusaconnect.addItem(&param_prusaconnect_token);
+  param_group_prusaconnect.addItem(&param_prusaconnect_freq);
+  param_group_prusaconnect.addItem(&param_prusaconnect_flash);
+  iotWebConf.addParameterGroup(&param_group_prusaconnect);
+
   iotWebConf.getApTimeoutParameter()->visible = true;
   iotWebConf.setConfigSavedCallback(on_config_saved);
   iotWebConf.setWifiConnectionCallback(on_connected);
@@ -504,6 +595,18 @@ void loop()
 
   if (camera_server)
     camera_server->doLoop();
+  
+  if (iotWebConf.getState() == 4) //OnLine
+  {
+    if ((!String(param_prusaconnect_fingerprint.value()).isEmpty()) && (!String(param_prusaconnect_token.value()).isEmpty()))
+    {
+      if ((millis() - previousTrigger) >= String(param_prusaconnect_freq.value()).toInt()*1000)
+      {
+        trigger_prusaConnect();
+        previousTrigger = millis();
+      }
+    }
+  }
 
   yield();
 }

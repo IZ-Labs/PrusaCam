@@ -183,6 +183,31 @@
     </div>
     {{/NetworkState.OnLine}}
 
+    <h2 class="text-center">Prusa Connect</h2>
+    <div class="flex-table">
+        <div class="row">Prusa connect url:</div>
+        <div>{{PrusaConnectUrl}}</div>
+        <div class="row">Fingerprint:</div>
+        <div>{{FingerPrint}}</div>
+        <div class="row">Token:</div>
+        <div>{{Token}}</div>
+        <div class="row">Snapshot frequency:</div>
+        <div>{{SnapFrequency}} s</div>
+        <div class="row">Use Flash:</div>
+        <div>{{#PcFlash}}Enabled{{/PcFlash}}{{^PcFlash}}Disabled{{/PcFlash}}</div>
+    </div>
+
+    {{#PcConnected}}
+    <div class="alert alert-success">
+        <h3 class="text-center">Prusa Connect Linked!</h3>
+    </div>
+    {{/PcConnected}}
+    {{^PcConnected}}
+    <div class="alert alert-danger">
+        <h3 class="text-center">Prusa Connect Not Linked!</h3>
+    </div>
+    {{/PcConnected}}
+
     <h2 class="text-center">Camera</h2>
     <div class="flex-table">
         <div class="row">Frame rate:</div>

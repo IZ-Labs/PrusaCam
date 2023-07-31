@@ -9,6 +9,12 @@
 
 #define OTA_PASSWORD "ESP32CAM-RTSP"
 
+#define PRUSACONNECT_URL "https://webcam.connect.prusa3d.com/c/snapshot"
+#define PC_FINGERPRINT ""
+#define PC_TOKEN ""
+#define DEFAULT_SNAP_FREQUENCY "30"
+#define DEFAULT_USEFLASH false
+
 #define RTSP_PORT 554
 
 #define DEFAULT_CAMERA_CONFIG "AI THINKER"
