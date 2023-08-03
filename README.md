@@ -352,10 +352,13 @@ Make sure it is connected the right way around (Camera pointing away from the bo
 
 ## Credits
 
+esp32cam-rtsp-PrusaConnect is a fork of esp32cam-rtsp by rzeldent.
 esp32cam-rtsp depends on PlatformIO, Bootstrap 5 and Micro-RTSP by Kevin Hester.
 
 ## Change history
 
+- July 2023
+  - Added the Prusa Connect push snapshot mode 
 - March 2023
   - Added options to set PSRAM / Frame buffers
   - Added JPEG Motion streaming
