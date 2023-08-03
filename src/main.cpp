@@ -220,7 +220,10 @@ void handle_restart()
   auto html = moustache_render(restart_html_min_start, substitutions);
   web_server.send(200, "text/html", html);
   log_v("Restarting... Press refresh to connect again");
-  sleep(100);
+  sleep(200);
+  iotWebConf.goOffLine();
+  sleep(1000);
+  ESP.deepSleep(0);
   ESP.restart();
 }
 
