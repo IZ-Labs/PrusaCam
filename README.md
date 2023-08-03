@@ -190,38 +190,38 @@ It is also possible to restart manually by pressing the reset button.
 ## Connecting to Prusa Connect
 
 ### Preliminary steps
- - have a prusa connect account
- - have your printer set in Prusa Connect
+ - Have a prusa connect account
+ - Have your printer set in Prusa Connect
 
 ### Instructions
  - Connect to you Prusa Connect account and go to your printer
- - in the "Camera" tab, click on "add a new camera"
+ - In the "Camera" tab, click on "add a new camera"
  - Give a name to your camera
  - Click on the scan code:
  ![Add camera screen](assets/addCamera.png)
  - In the page that opens, enter the debugging console by pressing (F12) or Ctrl+Shift+i
- - verify that the camera is "ready" and started
+ - Verify that the camera is "ready" and started
  - In the debugging console, go to the "Network tab"
- - refresh the page (F5) 
- - click on the "snapshot" event:
+ - Refresh the page (F5) 
+ - Click on the "snapshot" event:
  ![capture snapshot event1](assets/prusaConnectSnapshot1.png)
- - get the URL displayed
- - go down to the end of the header data:
+ - Get the URL displayed
+ - Go down to the end of the header data:
  ![capture snapshot event2](assets/prusaConnectSnapshot2.png)
- - note down the "fingerprint" code and the "token" value.
- - close the page, but don't delete the camera you created.
+ - Note down the "fingerprint" code and the "token" value.
+ - Close the page, but don't delete the camera you created.
 
- - go to the ESP32Cam-RTSP-PrusaConnect configuration screen
- - in the section "Prusa Connect":
+ - Go to the ESP32Cam-RTSP-PrusaConnect configuration screen
+ - In the section "Prusa Connect":
  ![PrusaConnect configuration](assets/configPrusa.png)
- - enter the URL get from the debugging console if the default value is not the right one
- - enter the fingerprint value
- - enter the token value
- - set the snapshot frequency. Possible values are every 10s / 30s / 60s
- - check the option if you which to light up the flash when taking the picture.
- - save the configuration at last and return to home page
- - restart (if restart is not working, restart the camera manually)
- - after restart and initialisation (by default, after 30s), the first pictures should start to appear on prusa connect for your camera.
+ - Enter the URL get from the debugging console if the default value is not the right one
+ - Enter the fingerprint value
+ - Enter the token value
+ - Set the snapshot frequency. Possible values are every 10s / 30s / 60s
+ - Check the option if you which to light up the flash when taking the picture.
+ - Save the configuration at last and return to home page
+ - Restart (if restart is not working, restart the camera manually)
+ - After restart and initialisation (by default, after 30s), the first pictures should start to appear on prusa connect for your camera.
 
 
 
