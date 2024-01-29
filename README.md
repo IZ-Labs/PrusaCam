@@ -119,13 +119,13 @@ After programming remove the wire to tge GPIO0 pin to exit the download mode.
 Open a command line or terminal window and clone this repository from GitHub.
 
 ```sh
-git clone https://github.com/rzeldent/esp32cam-rtsp.git
+git clone https://github.com/Jerzeek/PrintCam-Firmware.git
 ```
 
 go into the folder
 
 ```sh
-cd esp32cam-rtsp
+cd PrintCam-Firmware
 ```
 
 Next, the firmware has to be build and deployed to the ESP32.
@@ -195,27 +195,16 @@ It is also possible to restart manually by pressing the reset button.
 
 ### Instructions
  - Connect to you Prusa Connect account and go to your printer
- - In the "Camera" tab, click on "add a new camera"
+ - In the "Camera" tab, click on "Add new other camera"
  - Give a name to your camera
- - Click on the scan code:
- ![Add camera screen](assets/addCamera.png)
- - In the page that opens, enter the debugging console by pressing (F12) or Ctrl+Shift+i
- - Verify that the camera is "ready" and started
- - In the debugging console, go to the "Network tab"
- - Refresh the page (F5) 
- - Click on the "snapshot" event:
- ![capture snapshot event1](assets/prusaConnectSnapshot1.png)
- - Get the URL displayed
- - Go down to the end of the header data:
- ![capture snapshot event2](assets/prusaConnectSnapshot2.png)
- - Note down the "fingerprint" code and the "token" value.
- - Close the page, but don't delete the camera you created.
+ - Write down the Token
+
 
  - Go to the ESP32Cam-RTSP-PrusaConnect configuration screen
  - In the section "Prusa Connect":
  ![PrusaConnect configuration](assets/configPrusa.png)
  - Enter the URL get from the debugging console if the default value is not the right one
- - Enter the fingerprint value
+ - Enter a fingerprint value (THIS NEEDS TO BE UNIQUE FOR EVERY CAMERA, YOU CAN USE THE MAC ADDRESS OF THE ESP32CAM without the ":")
  - Enter the token value
  - Set the snapshot frequency. Possible values are every 10s / 30s / 60s
  - Check the option if you which to light up the flash when taking the picture.
@@ -356,7 +345,9 @@ esp32cam-rtsp-PrusaConnect is a fork of esp32cam-rtsp by rzeldent.
 esp32cam-rtsp depends on PlatformIO, Bootstrap 5 and Micro-RTSP by Kevin Hester.
 
 ## Change history
-
+- Jan 2024
+  - Update camera registery steps in Prusa Connect
+  - Fix link to Prusa Connect
 - July 2023
   - Added the Prusa Connect push snapshot mode 
 - March 2023
