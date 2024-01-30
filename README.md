@@ -2,6 +2,9 @@
 
 [![Platform IO CI](https://github.com/rzeldent/esp32cam-rtsp/actions/workflows/main.yml/badge.svg)](https://github.com/rzeldent/esp32cam-rtsp/actions/workflows/main.yml)
 
+Webflash by:@witnessmenow
+Firmware by: @oguegan and @rzeldent
+
 Simple [RTSP](https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol), [HTTP JPEG Streamer](https://en.wikipedia.org/wiki/Motion_JPEG) and image server with configuration through the web interface.
 It also have settings to configure Prusa Connect accesspoint in order to automatically send snapshots of the printer so that it can appear in the 'camera' tab in Prusa Connect.
 
