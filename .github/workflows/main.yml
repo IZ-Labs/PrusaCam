@@ -21,4 +21,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: firmware.bin
-          path: .pio/build/*/firmware.bin
+          path: code/.pio/build/*/firmware.bin
