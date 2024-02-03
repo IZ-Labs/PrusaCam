@@ -5,10 +5,10 @@
       {
         "chipFamily": "ESP32",
         "parts": [
-          { "path": "boot_app0.bin", "offset": 57344 },
-          { "path": "PrintCam_firmware.bin", "offset": 65536 },
           { "path": "PrintCam_bootloader.bin", "offset": 4096 },
           { "path": "PrintCam_partitions.bin", "offset": 32768 }
+          { "path": "boot_app0.bin", "offset": 57344 },
+          { "path": "PrintCam_firmware.bin", "offset": 65536 },
         ]
       }
     ]
