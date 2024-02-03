@@ -312,3 +312,4 @@ protected:
 
 
 #endif /* HTTPClientJPG_H_ */
+

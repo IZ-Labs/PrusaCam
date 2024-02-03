@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoOTA.h>
 #include <esp_wifi.h>
-#include <httpClientJPG.h>
+#include <HTTPClientJPG.h>
 #include <soc/rtc_cntl_reg.h>
 #include <IotWebConf.h>
 #include <IotWebConfTParameter.h>
