@@ -7,30 +7,108 @@ h1 {
   font-family: verdana;
   font-size: 300%;
 }
+h2 {
+  color: rgb(211, 102, 0);
+  font-family: verdana;
+  font-size: 150%;
+}
+h3 {
+  color: rgb(211, 102, 0);
+  font-family: verdana;
+  font-size: 120%;
+}
+body {
+  font-family: Verdana;
+  margin-left: 50px;
+}
 </style>
 </head>
 <body>
+    <h1>Instructions PrintCam</h1>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/7mDwk6ZupY4?si=may24txyIarwSl1H" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    <p> This page is made to help you setup your PrintCam. The PrintCam is a camera that can be used to monitor your 3D printer. It is connected to the printer and can be accessed through the Prusa Connect interface. 
+        <br><i><a href="https://github.com/Jerzeek/PrintCam-Firmware">Firmware Repo</a></i>
+    <br><i><a href="https://github.com/Jerzeek/PrintCam-Hardware">Hardware Repo</a></i>
     <br></br>
-    <br></br>
-    <h1>Web Flash Page to install PrintCam</h1>
-    <br></br>
-    <br></br>
-    <div id="main" style="display: none;">
+    ! Prerequisite: For this to work <b> you need to have a register Prusa Printer at https://connect.prusa3d.com/</b> ! </p>
 
-        <br>
+    <h2>Firmware Instructions</h2>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/NUT3d5dYtgo?si=6PbSUmeG1xSZnLIH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    <h3>Step 1: Get token from Prusa Connect</h3>
+    <br>- Go to <a href="https://connect.prusa3d.com/">connect.prusa3d.com</a> and login with your Prusa account. 
+    <br>- Go to the printer you want to connect the PrintCam to. 
+    <br>- Click on the camera tab 
+    <br>- Click on <b> Add New Other Camera</b> 
+    <br>- Copy this token and save it for later use.
+    <br></br>
+    <h3>Step 2: Generate Camera Fingerprint</h3>
+    <br>- Generate a camera fingerprint that is unique and is at least 16 characters long.
+    <br>- You can use <a href="https://bitwarden.com/password-generator/">Bitwarden</a>  to generate a random password. (it is free and open source!)
+    <br>- Copy this and save this fingerprint for later use.
+    <br></br>
+    <h3>Step 3: Flash the ESP32</h3>
+    <br>- Connect the ESP32Cam to your computer using an FTDI controller like <a href="https://nl.aliexpress.com/item/1005003472117545.html">this</a> or <a href="https://nl.aliexpress.com/item/1005005630911071.html">this</a>.
+    <br>- Make sure the ESP32 is in flash mode by connecting GPIO0 to GND during power on, some boards to it automatically.
+    <br>- Click on the button below to flash the ESP32 with the correct firmware. (Make sure to close anything using your devices com port (e.g. Serial monitor))
+    </p>
+    <div id="main" style="display: none;">
         <script
   type="module"
   src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module"
 ></script>
         <esp-web-install-button id="installButton" manifest="webflash/manifest.json"></esp-web-install-button>
-        <br></br>
-        <br></br>
-
-        <span>NOTE: Make sure to close anything using your devices com port (e.g. Serial monitor)</span>
     </div>
     <div id="notSupported" style="display: none;">
         Your browser does not support the Web Serial API. Try Chrome
     </div>
+    <br>- Go through the steps on the popup to flash the ESP32 with the correct firmware.
+    <br>- Once completed unplug the ESP32 Cam and connect it again to power.
+    <br></br>
+
+    <h3>Step 4: Connect the ESP32 to your network</h3>
+    <br>- Connect to the ESP32Cam's WiFi network. The name should be something like "ESP32Cam-XXXXXX"
+    <br>- Open your browser and go to <a href="192.168.4.1">192.168.4.1</a>
+    <br>- Enter "Change settings"
+    <br>- Enter a AP password (this is required and used to change settings later!)
+    <br>- Enter your WiFi SSID name and WiFi password
+    <br>- Enter desired startup delay (I recommend at least 15 seconds, then the printer is fully up and running)
+    <br>- Change any of the camera settings if desired
+    <br>- Make sure PSRAM is enabled
+    <br>- Enter the fingerprint and token you saved earlier
+    <br>- Click on "Save and Reboot"
+    <br><br><br><br><br>
+
+    <h2>Hardware Instructions</h2>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/XQ2t6iLVp_g?si=P8oAu_JxkwQG4lnd" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    <h3>Step 1: 3D Print holder</h3>
+    <br>- Get files from the <a href="https://github.com/Jerzeek/PrintCam-Hardware">Hardware Repo</a>
+    <br>- Print holder with PETG face that is towards you on the plate, no supports needed
+    <br>- Print USB connector A and B with supports
+    <br>- Solder male and female USB connector togeth with cable
+    <br>- Connect 50cm cable between USB connector and ESP32Cam
+    <h3>Step 2: Prepare Printer</h3>
+    <br>- Make sure the printer is turned off
+    <br>- Unplug the USB drive
+    <h3>Step 3: Assamble PrintCam</h3>
+    <br>- Insert USB connector in the USB port of the printer
+    <br>- Insert USB drive in the connector
+    <br>- Connect the ESP32Cam to the printer using the 3D printed mount
+    <br>- Connect with zipties
+    <h3>Step 4: ENJOY!</h3>
+    <br><br><br>
+    
+    <h1>About the project</h1>
+    You can support the project by buying the PrintCam from <a href="https://jerrydevos.nl/shop">my website</a> or from <a href="https://www.tindie.com/products/jerzeek/printcam-progress-camera-for-prusa-mini/">Tindie</a>. <br>
+    Software with the help from @witnessmenow (webflash) and firmware by: @oguegan and @rzeldent <br>
+    License: <br>
+    Software: GPL-3.0 license<br>
+    Hardware: CERN-OHL-S-2.0 license<br>
+    Media: CC-BY-NC-SA-4.0 license<br>
+    <br><br><br><br><br><br><br><br>
+
+    
+    
+
     
 
     <script>
