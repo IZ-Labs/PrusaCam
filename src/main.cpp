@@ -82,7 +82,7 @@ WebServer web_server(80);
 HTTPClientJPG httpc;
 
 // LED Power For Camera Flash
-#define LED_FLASH = 2;
+auto LED_FLASH = 2;
 
 uint32_t previousTrigger = 0;
 
