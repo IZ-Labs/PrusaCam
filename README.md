@@ -1,6 +1,6 @@
 # ESP32CAM-RTSP
 
-Reworked version of the PrintCam project from @Jerzeek (https://github.com/Jerzeek/PrintCam-Firmware) with the updated board packages avaliable in latest version of ESP32CAM-RTSP.
+Reworked version of the PrintCam project from @Jerzeek (https://github.com/Jerzeek/PrintCam-Firmware) with the updated board packages avaliable in latest version of ESP32CAM-RTSP. Other MISC improvements on the instructions are completed and there are planned changes to lighting control
 
 I had a couple old FREENOVE ESP32-WROVER-DEV camera modules around and wanted to use them for my printer. 
 
